@@ -171,10 +171,11 @@ const styledApp = styled(App)`
     left: 0;
     padding: 10px 0px;
     background-color: grey;
-    opacity: 0;
+    opacity: 0.1;
+    transition: opacity 0.2s ease-in;
 
     &:hover {
-      opacity: .3;
+      opacity: .4;
       transition: opacity 0.2s ease-in;
       cursor: pointer;
     }
@@ -190,10 +191,11 @@ const styledApp = styled(App)`
     right: 0;
     padding: 10px 0px;
     background-color: grey;
-    opacity: 0;
+    opacity: 0.1;
+    transition: opacity 0.2s ease-in;
 
     &:hover {
-      opacity: .3;
+      opacity: .4;
       transition: opacity 0.2s ease-in;
       cursor: pointer;
     }
