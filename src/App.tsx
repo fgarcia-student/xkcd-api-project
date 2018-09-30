@@ -9,6 +9,8 @@ import { FetchLatestComic } from './store/data-layer/comic/actions/FetchLatestCo
 import { ComicVM } from './models/view-models/ComicVM';
 import { FetchNextComic } from './store/data-layer/comic/actions/FetchNextComic';
 import { FetchPreviousComic } from './store/data-layer/comic/actions/FetchPreviousComic';
+import FlexCol from './components/FlexCol';
+import FlexRow from './components/FlexRow';
 
 interface StyleProps {
   className?: string;
@@ -44,23 +46,25 @@ class App extends React.Component<Props> {
     if (currentComic) {
       return (
         <div className={this.props.className}>
-          <div className="title">{currentComic.safe_title}</div>
-          <div className="date">Comic Date: {`${currentComic.month}/${currentComic.day}/${currentComic.year}`}</div>
-          <div
-            className="back"
-            onClick={this.handlePreviousComic}
-          >
-            Previous
-          </div>
-          <div
-            className="next"
-            onClick={this.handleNextComic}
-          >
-            Next
-          </div>
-          <div className="img-wrapper">
+          <FlexCol id="Title_And_Date">
+            <div className="title">{currentComic.safe_title}</div>
+            <div className="date">Comic Date: {`${currentComic.month}/${currentComic.day}/${currentComic.year}`}</div>
+          </FlexCol>
+          <FlexRow id="Image_And_Controls">
+            <div
+              className="back"
+              onClick={this.handlePreviousComic}
+            >
+              Previous
+            </div>
             <img className="img" alt={currentComic.alt} src={currentComic.img} />
-          </div>
+            <div
+              className="next"
+              onClick={this.handleNextComic}
+            >
+              Next
+            </div>
+          </FlexRow>
         </div>
       );
     }
@@ -101,7 +105,62 @@ function mapDispatchToProps(dispatch: Dispatch): PropsFromDispatch {
 }
 
 const styledApp = styled(App)`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 
+  #Title_And_Date {
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+  }
+
+  #Image_And_Controls {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .img {
+    width: 500px;
+    height: 500px;
+  }
+
+  .back {
+    height: 500px;
+    width: 65px;
+    display: ${(props) => props.currentPage === 1 ? "none" : "flex"};
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 75%;
+    background-color: grey;
+    opacity: 0;
+
+    &:hover {
+      opacity: .5;
+      transition: opacity 0.2s ease-in;
+      cursor: pointer;
+    }
+  }
+
+  .next {
+    height: 500px;
+    width: 65px;
+    display: ${(props) => props.currentPage === props.maxPage ? "none" : "flex"};
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 75%;
+    background-color: grey;
+    opacity: 0;
+
+    &:hover {
+      opacity: .5;
+      transition: opacity 0.2s ease-in;
+      cursor: pointer;
+    }
+  }
 `;
 
 export default connect(mapStateToProps, mapDispatchToProps)(styledApp);
