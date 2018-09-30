@@ -8,5 +8,10 @@ Technology Used:
   - Redux - Thunk
   - Axios
   - Styled Components
+  
+How to run:
+  - clone Repo && cd
+  - yarn start or npm start
+  - navigate to localhost:3000
 
 MIT License
