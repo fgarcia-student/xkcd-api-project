@@ -16,3 +16,7 @@ export function getCurrentPage(state: IRootState) {
 export function getMaxPage(state: IRootState) {
     return state.data.comic.maxPage;
 }
+
+export function isLoading(state: IRootState) {
+    return state.data.comic.loading;
+}

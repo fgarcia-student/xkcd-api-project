@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
 
 import { IRootState } from './store/rootReducer';
-import { getCurrentComic, getCurrentPage, getMaxPage } from './store/data-layer/comic/selectors';
+import { getCurrentComic, getCurrentPage, getMaxPage, isLoading } from './store/data-layer/comic/selectors';
 import { FetchLatestComic } from './store/data-layer/comic/actions/FetchLatestComic';
 import { ComicVM } from './models/view-models/ComicVM';
 import FlexCol from './components/FlexCol';
 import FlexRow from './components/FlexRow';
 import { FetchSpecificComic } from './store/data-layer/comic/actions/FetchSpecificComic';
+import { BarLoader } from 'react-spinners';
 
 interface StyleProps {
   className?: string;
@@ -19,6 +20,7 @@ interface PropsFromState {
   currentComic: ComicVM | null;
   currentPage: number;
   maxPage: number;
+  loading: boolean;
 }
 
 interface PropsFromDispatch {
@@ -72,7 +74,17 @@ class App extends React.Component<Props> {
         </div>
       );
     }
-    return <h1>Loading comic...</h1>
+    return (
+      <div id="Loading" className={this.props.className}>
+        <BarLoader loading={this.props.loading} />
+        <FlexRow id="App_Author_Tag">
+          <span>Made by Francisco:
+            <a href="https://github.com/fgarcia-student" target="_blank">Github</a>|
+            <a href="https://twitter.com/francisc0x5E" target="_blank">Twitter</a>
+          </span>
+        </FlexRow>
+      </div>
+    );
   }
 
   private handlePreviousComic(event: React.SyntheticEvent<HTMLElement>) {
@@ -97,6 +109,7 @@ function mapStateToProps(state: IRootState): PropsFromState {
     currentComic: getCurrentComic(state),
     currentPage: getCurrentPage(state),
     maxPage: getMaxPage(state),
+    loading: isLoading(state),
   };
 }
 
@@ -124,14 +137,21 @@ const styledApp = styled(App)`
 
   #Image_And_Controls {
     position: relative;
-    align-items: center;
-    justify-content: center;
+    margin: 0 auto;
+    width: 520px;
+    height: 520px;
   }
 
   #App_Author_Tag {
     align-items: center;
     justify-content: center;
     height: 80px;
+  }
+
+  &#Loading {
+    margin-top: 595px;
+    align-items: center;
+    justify-content: center;
   }
 
   .img {
@@ -148,8 +168,8 @@ const styledApp = styled(App)`
     align-items: center;
     justify-content: center;
     position: absolute;
-    right: 77%;
-    padding: 5px 0px;
+    left: 0;
+    padding: 10px 0px;
     background-color: grey;
     opacity: 0;
 
@@ -167,8 +187,8 @@ const styledApp = styled(App)`
     align-items: center;
     justify-content: center;
     position: absolute;
-    left: 77%;
-    padding: 5px 0px;
+    right: 0;
+    padding: 10px 0px;
     background-color: grey;
     opacity: 0;
 

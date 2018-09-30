@@ -3,9 +3,11 @@ import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import { HttpMethods } from '../../../../constants/HttpMethods';
 import { ComicDM } from 'src/models/data-models/ComicDM';
 import { Dispatch } from 'redux';
+import { TriggerLoadingCreator } from './TriggerLoading';
 
 export function FetchLatestComic() {
     return function(dispatch: Dispatch) {
+        dispatch(TriggerLoadingCreator());
         const config: AxiosRequestConfig = {
             url: "https://xkcd.now.sh/",
             method: HttpMethods.GET,
