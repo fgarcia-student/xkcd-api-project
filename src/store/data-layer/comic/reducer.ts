@@ -45,17 +45,12 @@ export function ComicStoreReducer(
                     .setCurrentComic(action.comic)
                     .setCurrentPage(action.comic.num)
                     .setMaxPage(action.comic.num);
-        case ComicDataTypes.FETCH_NEXT_COMIC_SUCCESS:
+        case ComicDataTypes.FETCH_SPECIFIC_COMIC_SUCCESS:
             return state
-                    .setCurrentComic(action.nextComic)
-                    .setCurrentPage(action.nextComic.num);
-        case ComicDataTypes.FETCH_PREV_COMIC_SUCCESS:
-            return state
-                    .setCurrentComic(action.prevComic)
-                    .setCurrentPage(action.prevComic.num);
+                    .setCurrentComic(action.comic)
+                    .setCurrentPage(action.comic.num);
+        case ComicDataTypes.FETCH_SPECIFIC_COMIC_FAIL:
         case ComicDataTypes.FETCH_LATEST_COMIC_FAIL:
-        case ComicDataTypes.FETCH_NEXT_COMIC_FAIL:
-        case ComicDataTypes.FETCH_PREV_COMIC_FAIL:
             return state;
         default:
             return state;

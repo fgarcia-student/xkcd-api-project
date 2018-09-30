@@ -7,10 +7,9 @@ import { IRootState } from './store/rootReducer';
 import { getCurrentComic, getCurrentPage, getMaxPage } from './store/data-layer/comic/selectors';
 import { FetchLatestComic } from './store/data-layer/comic/actions/FetchLatestComic';
 import { ComicVM } from './models/view-models/ComicVM';
-import { FetchNextComic } from './store/data-layer/comic/actions/FetchNextComic';
-import { FetchPreviousComic } from './store/data-layer/comic/actions/FetchPreviousComic';
 import FlexCol from './components/FlexCol';
 import FlexRow from './components/FlexRow';
+import { FetchSpecificComic } from './store/data-layer/comic/actions/FetchSpecificComic';
 
 interface StyleProps {
   className?: string;
@@ -24,8 +23,7 @@ interface PropsFromState {
 
 interface PropsFromDispatch {
   fetchLatestComic: typeof FetchLatestComic;
-  fetchNextComic: typeof FetchNextComic;
-  fetchPreviousComic: typeof FetchPreviousComic;
+  fetchSpecificComic: typeof FetchSpecificComic;
 }
 
 type Props = StyleProps & PropsFromState & PropsFromDispatch;
@@ -55,15 +53,21 @@ class App extends React.Component<Props> {
               className="back"
               onClick={this.handlePreviousComic}
             >
-              Previous
+              {"<<<<"}
             </div>
             <img className="img" alt={currentComic.alt} src={currentComic.img} />
             <div
               className="next"
               onClick={this.handleNextComic}
             >
-              Next
+              {">>>>"}
             </div>
+          </FlexRow>
+          <FlexRow id="App_Author_Tag">
+            <span>Made by Francisco:
+              <a href="https://github.com/fgarcia-student" target="_blank">Github</a>|
+              <a href="https://twitter.com/francisc0x5E" target="_blank">Twitter</a>
+            </span>
           </FlexRow>
         </div>
       );
@@ -75,7 +79,7 @@ class App extends React.Component<Props> {
     const { currentPage } = this.props;
     if (currentPage > 0) {
       const prevComicPage = currentPage - 1;
-      this.props.fetchPreviousComic(prevComicPage);
+      this.props.fetchSpecificComic(prevComicPage);
     }
   }
 
@@ -83,7 +87,7 @@ class App extends React.Component<Props> {
     const { currentPage, maxPage } = this.props;
     if (currentPage < maxPage) {
       const nextComicPage = currentPage + 1;
-      this.props.fetchNextComic(nextComicPage);
+      this.props.fetchSpecificComic(nextComicPage);
     }
   }
 }
@@ -99,8 +103,7 @@ function mapStateToProps(state: IRootState): PropsFromState {
 function mapDispatchToProps(dispatch: Dispatch): PropsFromDispatch {
   return bindActionCreators({
     fetchLatestComic: FetchLatestComic,
-    fetchNextComic: FetchNextComic,
-    fetchPreviousComic: FetchPreviousComic,
+    fetchSpecificComic: FetchSpecificComic,
   }, dispatch);
 }
 
@@ -109,10 +112,14 @@ const styledApp = styled(App)`
   flex: 1;
   flex-direction: column;
 
+  a {
+    padding: 0 5px;
+  }
+
   #Title_And_Date {
     align-items: center;
     justify-content: center;
-    min-height: 120px;
+    min-height: 80px;
   }
 
   #Image_And_Controls {
@@ -121,9 +128,17 @@ const styledApp = styled(App)`
     justify-content: center;
   }
 
+  #App_Author_Tag {
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+  }
+
   .img {
     width: 500px;
     height: 500px;
+    padding: 5px;
+    border: 5px solid black;
   }
 
   .back {
@@ -133,12 +148,13 @@ const styledApp = styled(App)`
     align-items: center;
     justify-content: center;
     position: absolute;
-    right: 75%;
+    right: 77%;
+    padding: 5px 0px;
     background-color: grey;
     opacity: 0;
 
     &:hover {
-      opacity: .5;
+      opacity: .3;
       transition: opacity 0.2s ease-in;
       cursor: pointer;
     }
@@ -151,12 +167,13 @@ const styledApp = styled(App)`
     align-items: center;
     justify-content: center;
     position: absolute;
-    left: 75%;
+    left: 77%;
+    padding: 5px 0px;
     background-color: grey;
     opacity: 0;
 
     &:hover {
-      opacity: .5;
+      opacity: .3;
       transition: opacity 0.2s ease-in;
       cursor: pointer;
     }

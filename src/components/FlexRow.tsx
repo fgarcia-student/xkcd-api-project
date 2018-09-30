@@ -7,7 +7,7 @@ interface FlexRowProps {
     children?: React.ReactNode;
 }
 
-class FlexRow extends React.PureComponent<FlexRowProps> {
+class FlexRow extends React.Component<FlexRowProps> {
     public render() {
         return (
             <div

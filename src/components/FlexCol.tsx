@@ -7,7 +7,7 @@ interface FlexColProps {
     children?: React.ReactNode;
 }
 
-class FlexCol extends React.PureComponent<FlexColProps> {
+class FlexCol extends React.Component<FlexColProps> {
     public render() {
         return (
             <div

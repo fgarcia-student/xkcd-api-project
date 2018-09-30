@@ -1,12 +1,9 @@
 import { FetchLatestComicFail, FetchLatestComicSuccess } from './FetchLatestComic';
-import { FetchNextComicFail, FetchNextComicSuccess } from './FetchNextComic';
-import { FetchPreviousComicFail, FetchPreviousComicSuccess } from './FetchPreviousComic';
+import { FetchSpecificComicFail, FetchSpecificComicSuccess } from './FetchSpecificComic';
 
 export type ComicDataActions = (
     FetchLatestComicFail |
     FetchLatestComicSuccess |
-    FetchNextComicFail |
-    FetchNextComicSuccess |
-    FetchPreviousComicFail |
-    FetchPreviousComicSuccess
+    FetchSpecificComicFail |
+    FetchSpecificComicSuccess
 );
