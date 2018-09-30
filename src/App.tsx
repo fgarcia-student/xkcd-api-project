@@ -1,22 +1,88 @@
 import * as React from 'react';
 import './App.css';
 
-import logo from './logo.svg';
+import { connect } from 'react-redux';
+import { IRootState } from './store/rootReducer';
+import { getCurrentComic, getCurrentPage, getMaxPage } from './store/data-layer/comic/selectors';
+import { Dispatch, bindActionCreators } from 'redux';
+import { FetchLatestComic } from './store/data-layer/comic/actions/FetchLatestComic';
+import { ComicVM } from './models/view-models/ComicVM';
+import { FetchNextComic } from './store/data-layer/comic/actions/FetchNextComic';
+import { FetchPreviousComic } from './store/data-layer/comic/actions/FetchPreviousComic';
 
-class App extends React.Component {
+interface PropsFromState {
+  currentComic: ComicVM | null;
+  currentPage: number;
+  maxPage: number;
+}
+
+interface PropsFromDispatch {
+  fetchLatestComic: typeof FetchLatestComic;
+  fetchNextComic: typeof FetchNextComic;
+  fetchPreviousComic: typeof FetchPreviousComic;
+}
+
+type Props = PropsFromState & PropsFromDispatch;
+
+class App extends React.Component<Props> {
+
+  constructor(props: Props) {
+    super(props);
+
+    this.props.fetchLatestComic();
+    this.handlePreviousComic = this.handlePreviousComic.bind(this);
+    this.handleNextComic = this.handleNextComic.bind(this);
+  }
+
   public render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
-    );
+    const { currentComic } = this.props;
+    if (currentComic) {
+      return (
+        <div className="App">
+          <h1>{currentComic.safe_title}</h1>
+          <h2>Comic Date: {`${currentComic.month}/${currentComic.day}/${currentComic.year}`}</h2>
+          <button onClick={this.handlePreviousComic}>Previous</button>
+          <button onClick={this.handleNextComic}>Next</button>
+          <div>
+            <img alt={currentComic.alt} src={currentComic.img} />
+          </div>
+        </div>
+      );
+    }
+    return <h1>Loading comic...</h1>
+  }
+
+  private handlePreviousComic(event: React.SyntheticEvent<HTMLButtonElement>) {
+    const { currentPage } = this.props;
+    if (currentPage > 0) {
+      const prevComicPage = currentPage - 1;
+      this.props.fetchPreviousComic(prevComicPage);
+    }
+  }
+
+  private handleNextComic(event: React.SyntheticEvent<HTMLButtonElement>) {
+    const { currentPage, maxPage } = this.props;
+    if (currentPage < maxPage) {
+      const nextComicPage = currentPage + 1;
+      this.props.fetchNextComic(nextComicPage);
+    }
   }
 }
 
-export default App;
+function mapStateToProps(state: IRootState): PropsFromState {
+  return {
+    currentComic: getCurrentComic(state),
+    currentPage: getCurrentPage(state),
+    maxPage: getMaxPage(state),
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch): PropsFromDispatch {
+  return bindActionCreators({
+    fetchLatestComic: FetchLatestComic,
+    fetchNextComic: FetchNextComic,
+    fetchPreviousComic: FetchPreviousComic,
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

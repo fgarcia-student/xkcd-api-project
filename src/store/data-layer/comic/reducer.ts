@@ -2,39 +2,36 @@ import { ComicDataActions } from './actions/index';
 import { ComicDataTypes } from './types';
 import { ComicDM } from '../../../models/data-models/ComicDM';
 
-interface IComicStore {
-    currentPage: number;
+export interface IComicStore {
     currentComic?: ComicDM;
+    currentPage: number;
     maxPage: number;
-    setCurrentPage(currentPage: number): IComicStore;
     setCurrentComic(currentComic: ComicDM): IComicStore;
+    setCurrentPage(currentPage: number): IComicStore;
     setMaxPage(maxPage: number): IComicStore;
 }
 
 class ComicStore implements IComicStore {
-    public currentPage: number;
     public currentComic?: ComicDM;
+    public currentPage: number;
     public maxPage: number;
 
-    constructor() {
-        this.currentComic = undefined;
-        this.currentPage = -1;
-        this.maxPage = -1;
+    constructor(currentPage: number = -1, maxPage: number = -1, currentComic?: ComicDM) {
+        this.currentComic = currentComic;
+        this.currentPage = currentPage;
+        this.maxPage = maxPage;
+    }
+    
+    public setCurrentComic(currentComic: ComicDM): IComicStore {
+        return new ComicStore(this.currentPage, this.maxPage, currentComic);
     }
 
     public setCurrentPage(currentPage: number): IComicStore {
-        this.currentPage = currentPage;
-        return this;
-    }
-
-    public setCurrentComic(currentComic: ComicDM): IComicStore {
-        this.currentComic = currentComic;
-        return this;
+        return new ComicStore(currentPage, this.maxPage, this.currentComic);
     }
 
     public setMaxPage(maxPage: number): IComicStore {
-        this.maxPage = maxPage;
-        return this;
+        return new ComicStore(this.currentPage, maxPage, this.currentComic);
     }
 }
 
@@ -46,12 +43,16 @@ export function ComicStoreReducer(
         case ComicDataTypes.FETCH_LATEST_COMIC_SUCCESS:
             return state
                     .setCurrentComic(action.comic)
-                    .setMaxPage(action.comic.num)
-                    .setCurrentPage(action.comic.num);
+                    .setCurrentPage(action.comic.num)
+                    .setMaxPage(action.comic.num);
         case ComicDataTypes.FETCH_NEXT_COMIC_SUCCESS:
-            return state;
+            return state
+                    .setCurrentComic(action.nextComic)
+                    .setCurrentPage(action.nextComic.num);
         case ComicDataTypes.FETCH_PREV_COMIC_SUCCESS:
-            return state;
+            return state
+                    .setCurrentComic(action.prevComic)
+                    .setCurrentPage(action.prevComic.num);
         case ComicDataTypes.FETCH_LATEST_COMIC_FAIL:
         case ComicDataTypes.FETCH_NEXT_COMIC_FAIL:
         case ComicDataTypes.FETCH_PREV_COMIC_FAIL:
