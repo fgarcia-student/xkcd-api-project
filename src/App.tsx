@@ -39,16 +39,28 @@ class App extends React.Component<Props> {
 
     this.handlePreviousComic = this.handlePreviousComic.bind(this);
     this.handleNextComic = this.handleNextComic.bind(this);
+    this.handleSelectComic = this.handleSelectComic.bind(this);
+    this.handleSelectComicEnter = this.handleSelectComicEnter.bind(this);
+    this.handleSelectComicLogic = this.handleSelectComicLogic.bind(this);
   }
 
   public render() {
-    const { currentComic } = this.props;
+    const { currentComic, currentPage, maxPage } = this.props;
     if (currentComic) {
       return (
         <div className={this.props.className}>
+          <input
+            type="number"
+            defaultValue={`${this.props.currentPage}`}
+            min={1}
+            max={maxPage}
+            onBlur={this.handleSelectComic}
+            onKeyDown={this.handleSelectComicEnter}
+          />
           <FlexCol id="Title_And_Date">
-            <div className="title">{currentComic.safe_title}</div>
-            <div className="date">Comic Date: {`${currentComic.month}/${currentComic.day}/${currentComic.year}`}</div>
+            <div>{currentComic.safe_title}</div>
+            <div>Comic Date: {`${currentComic.month}/${currentComic.day}/${currentComic.year}`}</div>
+            <div>Page {currentPage}/{maxPage}</div>
           </FlexCol>
           <FlexRow id="Image_And_Controls">
             <div
@@ -65,25 +77,26 @@ class App extends React.Component<Props> {
               {">>>>"}
             </div>
           </FlexRow>
-          <FlexRow id="App_Author_Tag">
-            <span>Made by Francisco:
-              <a href="https://github.com/fgarcia-student" target="_blank">Github</a>|
-              <a href="https://twitter.com/francisc0x5E" target="_blank">Twitter</a>
-            </span>
-          </FlexRow>
+          {this.footer()}
         </div>
       );
     }
     return (
       <div id="Loading" className={this.props.className}>
         <BarLoader loading={this.props.loading} />
-        <FlexRow id="App_Author_Tag">
-          <span>Made by Francisco:
-            <a href="https://github.com/fgarcia-student" target="_blank">Github</a>|
-            <a href="https://twitter.com/francisc0x5E" target="_blank">Twitter</a>
-          </span>
-        </FlexRow>
+        {this.footer()}
       </div>
+    );
+  }
+
+  private footer() {
+    return (
+      <FlexRow id="App_Author_Tag">
+        <span>Made by Francisco:
+          <a href="https://github.com/fgarcia-student" target="_blank">Github</a>|
+          <a href="https://twitter.com/francisc0x5E" target="_blank">Twitter</a>
+        </span>
+      </FlexRow>
     );
   }
 
@@ -101,6 +114,23 @@ class App extends React.Component<Props> {
       const nextComicPage = currentPage + 1;
       this.props.fetchSpecificComic(nextComicPage);
     }
+  }
+
+  private handleSelectComic(event: React.ChangeEvent<HTMLInputElement>) {
+    this.handleSelectComicLogic(event.currentTarget.value);
+  }
+
+  private handleSelectComicEnter(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.keyCode === 13) { // enter
+      this.handleSelectComicLogic(event.currentTarget.value);
+    }
+  }
+
+  private handleSelectComicLogic(value: string) {
+    const comicNumber: number = Number(value);
+      if (!isNaN(comicNumber) && comicNumber > 0 && comicNumber <= this.props.maxPage) {
+        this.props.fetchSpecificComic(comicNumber);
+      }
   }
 }
 
